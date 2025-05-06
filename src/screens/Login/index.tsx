@@ -1,22 +1,31 @@
-import { Button, StyleSheet, Text, View, TextInput } from "react-native";
+import { Button, StyleSheet, Text, View, TextInput, Alert } from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { LinearGradient } from "expo-linear-gradient";
 
 const Login = () => {
-  // const {login} = useAuth()
-  // const {navigate}=useNavigation<NavigationProp<any>>()
+  const { login } = useAuth();
+  const { navigate } = useNavigation<NavigationProp<any>>();
+
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
 
+  async function handleLogin() {
+    try {
+      await login(user, password);
+      navigate("Home");
+    } catch (error) {
+      console.error("Erro no login:", error);
+      Alert.alert("Erro", "Não foi possível fazer login");
+    }
+  }
+
   return (
-    <LinearGradient
-      colors={["#b9b9b9", "#252525"]}
-      style={styles.container}
-    >
+    <LinearGradient colors={["#b9b9b9", "#252525"]} style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Bem-vindo</Text>
+
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Usuário:</Text>
           <TextInput
@@ -41,11 +50,7 @@ const Login = () => {
           />
         </View>
 
-        <Button
-          title="Entrar"
-          color="#b9b9b9"
-          onPress={() => login(user, password)}
-        />
+        <Button title="Entrar" color="#b9b9b9" onPress={handleLogin} />
       </View>
     </LinearGradient>
   );

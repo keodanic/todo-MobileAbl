@@ -1,57 +1,72 @@
-import axios from 'axios';
-import React, {createContext,useEffect,useState,PropsWithChildren} from 'react'
-
+import axios from 'axios'
+import React, {
+  createContext,
+  useState,
+  PropsWithChildren
+} from 'react'
 
 type User = {
-  accessToken:string ,
-  username:string,
-  password:string,
+  email: string
+  token: string
 }
 
 type AuthContextProps = {
-  user:User | null;
-  login:(email:string,password:string) => Promise<void>;
-  logout: () => void;
-  getTasks:() => void;
-
+  user: User | null
+  login: (email: string, password: string) => Promise<void>
+  logout: () => void
+  getTasks: () => Promise<void>
 }
 
-export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps);
+export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
 
-export const AuthProvider = ({children}: PropsWithChildren) => {
-  const [user,setUser] = useState<User | null>(null);
+export const AuthProvider = ({ children }: PropsWithChildren) => {
+  const [user, setUser] = useState<User | null>(null)
 
-  async function login(email:string,password:string){
-    try{
-      const response = await axios.post('https://localhost:3000',{email,password});
-      setUser(response.data);
-      console.log(user)
-      return response.data
-    }
-    catch {
-      return alert("login deu errado pouraaaaa")
+  async function login(email: string, password: string) {
+    try {
+      const response = await axios.post('http://localhost:3333/session', {
+        email,
+        password,
+      })
+
+      const token = response.data.token
+
+      const userData: User = {
+        email,
+        token,
+      }
+
+      setUser(userData)
+
+    
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+
+      console.log("Logado com sucesso:", userData)
+    } catch (error) {
+      console.error("Erro no login:", error)
+      alert("Login deu errado, pouraaaa")
     }
   }
+
   async function logout() {
     setUser(null)
+    delete axios.defaults.headers.common['Authorization']
   }
+
   async function getTasks() {
-    try{
-      const response = await axios.get('https://localhost:3000')
-      console.log(response.data)
-      return response.data.title
+    try {
+      const response = await axios.get('http://localhost:3333/tasks')
+      console.log("Tarefas:", response.data)
+      return response.data
+    } catch (error) {
+      console.error("Erro ao buscar tarefas:", error)
+      alert("Deu errado, poura")
     }
-    catch{
-      return alert('deu errado poura')
-    }
-    
   }
-  return(
-    <AuthContext.Provider value={{user,login,logout,getTasks}}>
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, getTasks }}>
       {children}
     </AuthContext.Provider>
-
-
   )
-  
 }

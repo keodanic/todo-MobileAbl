@@ -1,23 +1,54 @@
-import { useState } from "react";
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, ScrollView } from "react-native";
+import { useContext, useEffect, useState } from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import axios from "axios";
+import { AuthContext } from "../../context/authcontext";
 
 const HomePage = () => {
   const [task, setTask] = useState("");
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<string[]>([]);
+  const { user } = useContext(AuthContext);
 
-  const handleAddTask = () => {
-    if (task.trim()) {
-      setTasks([...tasks, task]);
+  useEffect(() => {
+    if (user?.token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${user.token}`;
+      fetchTasks();
+    }
+  }, [user]);
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get("http://localhost:3333/tasks");
+      const taskTitles = response.data.map((t: any) => t.title);
+      setTasks(taskTitles);
+    } catch (error) {
+      console.error("Erro ao buscar tarefas:", error);
+    }
+  };
+
+
+  const handleAddTask = async () => {
+    if (!task.trim()) return;
+
+    try {
+      await axios.post("http://localhost:3333/tasks", { title: task });
+      setTasks((prev) => [...prev, task]);
       setTask("");
+    } catch (error) {
+      console.error("Erro ao criar tarefa:", error);
+      alert("Erro ao criar tarefa");
     }
   };
 
   return (
-    <LinearGradient
-      colors={["#b9b9b9", "#252525"]}
-      style={styles.container}
-    >
+    <LinearGradient colors={["#b9b9b9", "#252525"]} style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Minhas Tarefas</Text>
         <View style={styles.inputContainer}>
