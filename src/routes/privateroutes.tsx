@@ -1,6 +1,6 @@
 import {NavigationContainer} from "@react-navigation/native"
 import {createNativeStackNavigator, NativeStackNavigationProp} from "@react-navigation/native-stack"
-import Home from "../screens/Home"
+import HomePage from "../screens/Home"
 
 
 type CreateRoutesProps={
@@ -19,7 +19,7 @@ const PrivateRoutes = () => {
       screenOptions={{
         headerShown: false
       }}>
-        <Screen name="Home" component={Home} />
+        <Screen name="Home" component={HomePage} />
       </Navigator>
 
    );

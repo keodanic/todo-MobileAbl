@@ -8,7 +8,7 @@ const Routes = () => {
   const {user} = useAuth()
   return (
     <NavigationContainer>
-      {user?.accessToken ? <PrivateRoutes /> : <PublicRoutes />}
+      {user?.token ? <PrivateRoutes /> : <PublicRoutes />}
     </NavigationContainer>
   );
 };

@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   async function login(email: string, password: string) {
     try {
-      const response = await axios.post('http://localhost:3333/session', {
+      const response = await axios.post('http://192.168.3.236:3333/session', {
         email,
         password,
       })
@@ -55,7 +55,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   async function getTasks() {
     try {
-      const response = await axios.get('http://localhost:3333/tasks')
+      const response = await axios.get('http://192.168.3.236:3333/task')
       console.log("Tarefas:", response.data)
       return response.data
     } catch (error) {

@@ -14,7 +14,6 @@ const Login = () => {
   async function handleLogin() {
     try {
       await login(user, password);
-      navigate("Home");
     } catch (error) {
       console.error("Erro no login:", error);
       Alert.alert("Erro", "Não foi possível fazer login");

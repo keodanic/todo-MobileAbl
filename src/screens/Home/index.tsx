@@ -25,7 +25,7 @@ const HomePage = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://localhost:3333/tasks");
+      const response = await axios.get("http://192.168.3.236:3333/task");
       const taskTitles = response.data.map((t: any) => t.title);
       setTasks(taskTitles);
     } catch (error) {
@@ -38,7 +38,7 @@ const HomePage = () => {
     if (!task.trim()) return;
 
     try {
-      await axios.post("http://localhost:3333/tasks", { title: task });
+      await axios.post("http://192.168.3.236:3333/task", { title: task });
       setTasks((prev) => [...prev, task]);
       setTask("");
     } catch (error) {
