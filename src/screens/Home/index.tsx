@@ -12,9 +12,9 @@ import axios from "axios";
 import { AuthContext } from "../../context/authcontext";
 
 const HomePage = () => {
-  const [task, setTask] = useState("");
   const [tasks, setTasks] = useState<string[]>([]);
-  const { user } = useContext(AuthContext);
+  const { user,PostTask,getTasks } = useContext(AuthContext);
+  const [title,setTitle] = useState<string>('')
 
   useEffect(() => {
     if (user?.token) {
@@ -25,26 +25,15 @@ const HomePage = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("http://192.168.3.236:3333/task");
+      const response = await getTasks()
       const taskTitles = response.data.map((t: any) => t.title);
       setTasks(taskTitles);
     } catch (error) {
       console.error("Erro ao buscar tarefas:", error);
     }
   };
-
-
-  const handleAddTask = async () => {
-    if (!task.trim()) return;
-
-    try {
-      await axios.post("http://192.168.3.236:3333/task", { title: task });
-      setTasks((prev) => [...prev, task]);
-      setTask("");
-    } catch (error) {
-      console.error("Erro ao criar tarefa:", error);
-      alert("Erro ao criar tarefa");
-    }
+  const handleAddTask = async (title:string) => {
+    PostTask(title)
   };
 
   return (
@@ -53,14 +42,14 @@ const HomePage = () => {
         <Text style={styles.title}>Minhas Tarefas</Text>
         <View style={styles.inputContainer}>
           <TextInput
-            value={task}
+            value={title}
             style={styles.input}
-            onChangeText={setTask}
+            onChangeText={setTitle}
             placeholder="Digite sua tarefa"
             placeholderTextColor="#a0a0a0"
             autoCapitalize="sentences"
           />
-          <TouchableOpacity style={styles.addButton} onPress={handleAddTask}>
+          <TouchableOpacity style={styles.addButton} onPress={() => handleAddTask(title)}>
             <Text style={styles.addButtonText}>Adicionar</Text>
           </TouchableOpacity>
         </View>

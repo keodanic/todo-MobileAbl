@@ -4,19 +4,20 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { LinearGradient } from "expo-linear-gradient";
 
-const Login = () => {
-  const { login } = useAuth();
+const Register = () => {
+  const { register } = useAuth();
   const { navigate } = useNavigation<NavigationProp<any>>();
 
-  const [user, setUser] = useState("");
+  const [name,setName]=useState("")
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  async function handleLogin() {
+  
+  async function handleRegister() {
     try {
-      await login(user, password);
+      await register(name,email, password);
     } catch (error) {
-      console.error("Erro no login:", error);
-      Alert.alert("Erro", "Não foi possível fazer login");
+      console.error("Erro na criação de conta:", error);
+      Alert.alert("Erro", "Não foi possível criar a conta");
     }
   }
 
@@ -24,13 +25,26 @@ const Login = () => {
     <LinearGradient colors={["#b9b9b9", "#252525"]} style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Bem-vindo</Text>
+        <Text>Crie sua conta no TaskManager</Text>
 
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Usuário:</Text>
+          <Text style={styles.label}>Nome:</Text>
           <TextInput
             style={styles.textInput}
-            onChangeText={setUser}
-            value={user}
+            onChangeText={setName}
+            value={name}
+            placeholder="Digite seu nome aqui"
+            placeholderTextColor="#a0a0a0"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Text style={styles.label}>Email:</Text>
+          <TextInput
+            style={styles.textInput}
+            onChangeText={setEmail}
+            value={email}
             placeholder="Digite seu email aqui"
             placeholderTextColor="#a0a0a0"
             autoCapitalize="none"
@@ -49,8 +63,8 @@ const Login = () => {
           />
         </View>
 
-        <Button title="Entrar" color="#b9b9b9" onPress={handleLogin} />
-        <Button title="Não tenho uma conta" color={"#000481"} onPress={()=> navigate("Register") }/>
+        <Button title="Entrar" color="#b9b9b9" onPress={handleRegister} />
+      <Button title="Já tenho uma conta" color={"#000481"} onPress={()=> navigate("Login") }/>
       </View>
     </LinearGradient>
   );
@@ -101,4 +115,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Register;

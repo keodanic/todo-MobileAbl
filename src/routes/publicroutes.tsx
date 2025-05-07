@@ -1,10 +1,12 @@
 import {NavigationContainer} from "@react-navigation/native"
 import {createNativeStackNavigator, NativeStackNavigationProp} from "@react-navigation/native-stack"
 import Login from "../screens/Login";
+import Register from "../screens/Register";
 
 type CreateRoutesProps={
   Login:undefined,
-  Home:undefined
+  Home:undefined,
+  Register:undefined
 }
 
 const {Navigator, Screen}= createNativeStackNavigator<CreateRoutesProps>()
@@ -17,6 +19,7 @@ const PublicRoutes = () => {
       screenOptions={{
         headerShown: false
       }}>
+        <Screen name="Register" component={Register} />
         <Screen name="Login" component={Login} />
       </Navigator>
    );
