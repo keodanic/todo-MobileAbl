@@ -3,8 +3,10 @@ import { api } from '../services/api'
 import React, {
   createContext,
   useState,
-  PropsWithChildren
+  PropsWithChildren,
+  useEffect,
 } from 'react'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type User = {
   email: string
@@ -15,17 +17,27 @@ type AuthContextProps = {
   user: User | null
   login: (email: string, password: string) => Promise<void>
   logout: () => void
-  getTasks: () => Promise<void>
-  DeleteTask: (id:string) => Promise<any>
-  register: (name:string,email: string, password: string) => Promise<void>
-  PutTask: (id:string,title: string) => Promise<any>
-  PostTask:(title: string) => Promise<any>
+  getTasks: () => Promise<any[]>
+  DeleteTask: (id: string) => Promise<any>
+  editTask: (id: string) => Promise<any>
+  register: (name: string, email: string, password: string) => Promise<void>
+  PutTask: (id: string, title: string) => Promise<any>
+  PostTask: (title: string) => Promise<any>
 }
 
 export const AuthContext = createContext<AuthContextProps>({} as AuthContextProps)
-
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const [user, setUser] = useState<User | null>(null)
+
+   useEffect(() => {
+    async function getStorageData() {
+      const userStorage = await AsyncStorage.getItem('@token1234$%');
+      if (userStorage) {
+        setUser(JSON.parse(userStorage));
+      }
+    }
+    getStorageData();
+  }, []);
 
   async function login(email: string, password: string) {
     try {
@@ -33,26 +45,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         email,
         password,
       })
-
-      const token = response.data.token
-
-      const userData: User = {
-        email,
-        token,
+      if (response.data && response.data.token) {
+        await AsyncStorage.setItem('@token1234$%', JSON.stringify(response.data));
+        setUser(response.data);
+      } else {
+        throw new Error('Resposta inválida do servidor');
       }
-
-      setUser(userData)
-
-    
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-
-      console.log("Logado com sucesso:", userData)
-    } catch (error) {
-      console.error("Erro no login:", error)
-      alert("Login deu errado, pouraaaa")
-    }
+    } catch (error: any) {
+      if (error.response) {
+         if (error.response.status === 401 || error.response.status === 400) {
+          throw new Error('Credenciais inválidas. Verifique seu email e senha.');
+        } else {
+          throw new Error('Falha na conexão. Tente novamente mais tarde.');
+        }
+      }
   }
-
+}
   async function register(name:string,email: string, password: string) {
     try {
       const response = await api.post('users', {
@@ -68,6 +76,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   async function logout() {
+    await AsyncStorage.removeItem('@token1234$%');
     setUser(null)
     delete axios.defaults.headers.common['Authorization']
   }
@@ -79,7 +88,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     }
     try {
       const response = await api.get('tasks',{ headers: { Authorization: `Bearer ${user?.token}` } })
-      console.log("Tarefas:", response.data)
       return response.data
     } catch (error) {
       console.error("Erro ao buscar tarefas:", error)
@@ -99,7 +107,22 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       }
       catch(error: any){
         throw new Error(error)
-        alert("errou otaro")
+      }
+    }
+    async function editTask(id:string) {
+      if(!user?.token){
+        console.log("usuarios ou token não encontrados")
+        return;
+      }
+      try{
+        const response = api.patch(`tasks/${id}/edit`,
+          []
+          ,
+          { headers: { Authorization: `Bearer ${user?.token}`} })
+        return response
+      }
+      catch{
+        alert("errou")
       }
     }
   async function PutTask(id:string,title:string) {
@@ -123,7 +146,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       return;
     }
     try {
-      const response = await api.delete(`task/${id}`,
+      const response = await api.delete(`tasks/${id}`,
         { headers: { Authorization: `Bearer ${user.token}` } }
       )
       return response
@@ -134,7 +157,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, getTasks,register,PutTask,DeleteTask,PostTask}}>
+    <AuthContext.Provider value={{ user, login, logout, getTasks,register,PutTask,DeleteTask,PostTask,editTask}}>
       {children}
     </AuthContext.Provider>
   )
