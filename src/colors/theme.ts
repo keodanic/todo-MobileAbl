@@ -14,13 +14,13 @@ export type Theme = {
 
 export const lightTheme: Theme = {
     isDark:false ,
-    primary: "#4b6cb7",
+    primary: "#f67968",
     secondary: "#c3cfe2",
     background: "black",
     cardBackground: "#ffffff",
     text: "#333333",
     inputBackground: "#f0f0f0",
-    inputBorder: "#e0e0e0",
+    inputBorder: "black",
     button: "#4b6cb7",
     buttonText: "#ffffff",
     placeholder: "#a0a0a0",
@@ -28,7 +28,7 @@ export const lightTheme: Theme = {
 
 export const darkTheme: Theme = {
     isDark:true,
-    primary: "#ff7e5f",
+    primary: "#f67968",
     secondary: "#2c5364",
     background: "#0f2027",
     cardBackground: "#1e1e1e",

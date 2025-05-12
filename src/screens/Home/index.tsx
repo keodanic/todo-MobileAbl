@@ -73,44 +73,46 @@ const HomePage = () => {
   };
 
   const styles = StyleSheet.create({
-    container: {
+     container: {
       flex: 1,
       alignItems: "center",
-      padding: 5,
+      padding: 20,
     },
     formContainer: {
       backgroundColor: theme.cardBackground,
-      borderRadius: 15,
-      padding: 10,
-      width: "90%",
+      borderRadius: 20,
+      padding: 20,
+      width: "100%",
+      maxWidth: 500,
       alignItems: "center",
       shadowColor: "#000",
-      shadowOffset: { width: 0, height: 5 },
-      shadowOpacity: 0.3,
-      shadowRadius: 10,
-      elevation: 8,
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.15,
+      shadowRadius: 20,
+      elevation: 10,
       flex: 1,
-      marginTop: 20,
+      marginTop: 30,
     },
     header: {
       width: "100%",
       flexDirection: "row",
       justifyContent: "space-between",
       alignItems: "center",
-      marginBottom: 20,
+      marginBottom: 30,
     },
     title: {
-      fontSize: 28,
-      fontWeight: "bold",
+      fontSize: 32,
+      fontWeight: "800",
       color: theme.text,
-      marginBottom: 20,
+      marginBottom: 2,
+      letterSpacing: 0.5,
     },
     inputContainer: {
       width: "100%",
       flexDirection: "row",
       alignItems: "center",
-      gap: 10,
-      marginBottom: 20,
+      gap: 12,
+      marginBottom: 25,
     },
     input: {
       flex: 1,
@@ -172,13 +174,13 @@ const HomePage = () => {
     themeToggleContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      gap: 10,
+      gap: 25,
     },
   });
 
   return (
     <LinearGradient 
-      colors={isDark ? ["#0f2027", "#2c5364"] : ["#b9b9b9", "#c3cfe2"]} 
+      colors={[theme.primary, theme.secondary]} 
       style={styles.container}
     >
       <View style={styles.formContainer}>

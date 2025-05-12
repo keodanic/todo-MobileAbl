@@ -19,8 +19,8 @@ const PublicRoutes = () => {
       screenOptions={{
         headerShown: false
       }}>
-        <Screen name="Register" component={Register} />
         <Screen name="Login" component={Login} />
+        <Screen name="Register" component={Register} />
       </Navigator>
    );
 }

@@ -1,15 +1,83 @@
-import { Button, StyleSheet, Text, View, TextInput, Alert } from "react-native";
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  TextInput, 
+  Alert, 
+  TouchableOpacity 
+} from "react-native";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { LinearGradient } from "expo-linear-gradient";
+import { useTheme } from "../../hooks/theme";
+import { themes } from "../../colors/theme";
 
 const Login = () => {
   const { login } = useAuth();
   const { navigate } = useNavigation<NavigationProp<any>>();
-
+  const { theme } = useTheme();
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    formContainer: {
+      backgroundColor: theme.cardBackground,
+      borderRadius: 15,
+      padding: 30,
+      width: "85%",
+      alignItems: "center",
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 5 },
+      shadowOpacity: 0.3,
+      shadowRadius: 10,
+      elevation: 8,
+      gap: 20,
+    },
+    title: {
+      fontSize: 28,
+      fontWeight: "bold",
+      color: theme.text,
+      marginBottom: 10,
+    },
+    inputContainer: {
+      width: "100%",
+      gap: 8,
+    },
+    label: {
+      fontSize: 16,
+      color: theme.text,
+      fontWeight: "500",
+    },
+    textInput: {
+      backgroundColor: theme.inputBackground,
+      padding: 14,
+      borderRadius: 10,
+      borderColor:theme.inputBorder,
+      borderWidth: 1,
+      fontSize: 16,
+      color: theme.text,
+    },
+    button: {
+      width: "80%",
+      paddingVertical: 10,
+      borderRadius: 10,
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: theme.button,
+      marginTop: 5,
+    },
+    buttonText: {
+      color: theme.buttonText,
+      fontSize: 16,
+      fontWeight: "600",
+    },
+  });
 
   async function handleLogin() {
     try {
@@ -21,7 +89,7 @@ const Login = () => {
   }
 
   return (
-    <LinearGradient colors={["#b9b9b9", "#252525"]} style={styles.container}>
+    <LinearGradient colors={[theme.primary,theme.secondary]} style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Bem-vindo</Text>
 
@@ -32,7 +100,7 @@ const Login = () => {
             onChangeText={setUser}
             value={user}
             placeholder="Digite seu email aqui"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.placeholder}
             autoCapitalize="none"
           />
         </View>
@@ -44,61 +112,24 @@ const Login = () => {
             onChangeText={setPassword}
             value={password}
             placeholder="Digite sua senha aqui"
-            placeholderTextColor="#a0a0a0"
+            placeholderTextColor={theme.placeholder}
             secureTextEntry
           />
         </View>
 
-        <Button title="Entrar" color="#b9b9b9" onPress={handleLogin} />
-        <Button title="Não tenho uma conta" color={"#000481"} onPress={()=> navigate("Register") }/>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Entrar</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.button]}
+          onPress={() => navigate("Register")}
+        >
+          <Text style={styles.buttonText}>Não tenho uma conta</Text>
+        </TouchableOpacity>
       </View>
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  formContainer: {
-    backgroundColor: "#ffffff",
-    borderRadius: 15,
-    padding: 30,
-    width: "85%",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 8,
-    gap: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 10,
-  },
-  inputContainer: {
-    width: "100%",
-    gap: 8,
-  },
-  label: {
-    fontSize: 16,
-    color: "#333",
-    fontWeight: "500",
-  },
-  textInput: {
-    backgroundColor: "#f5f5f5",
-    padding: 14,
-    borderRadius: 10,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    fontSize: 16,
-    color: "#333",
-  },
-});
 
 export default Login;
