@@ -12,12 +12,13 @@ import axios from "axios";
 import { useAuth } from "../../hooks/auth";
 import { AntDesign,MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../hooks/theme";
+import { useTask } from "../../hooks/task";
 
 const HomePage = () => {
   const { theme, toggleTheme, isDark } = useTheme();
   const [tasks, setTasks] = useState<any[]>([]);
-  const { user, PostTask, getTasks, DeleteTask, logout, editTask } =
-    useAuth();
+  const { user ,logout } = useAuth();
+  const {PostTask, getTasks, DeleteTask, editTask} = useTask();
   const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
