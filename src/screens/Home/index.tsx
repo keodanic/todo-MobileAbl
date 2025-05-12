@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
-import { AuthContext } from "../../context/authcontext";
+import { useAuth } from "../../hooks/auth";
 import { AntDesign,MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../hooks/theme";
 
@@ -17,7 +17,7 @@ const HomePage = () => {
   const { theme, toggleTheme, isDark } = useTheme();
   const [tasks, setTasks] = useState<any[]>([]);
   const { user, PostTask, getTasks, DeleteTask, logout, editTask } =
-    useContext(AuthContext);
+    useAuth();
   const [title, setTitle] = useState<string>("");
 
   useEffect(() => {

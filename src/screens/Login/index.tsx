@@ -11,7 +11,6 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "../../hooks/theme";
-import { themes } from "../../colors/theme";
 
 const Login = () => {
   const { login } = useAuth();
