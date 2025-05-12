@@ -12,7 +12,7 @@ export type Theme = {
     placeholder: string;
 };
 
-export const lightTheme: Theme = {
+ const lightTheme: Theme = {
     isDark:false ,
     primary: "#f67968",
     secondary: "#c3cfe2",
@@ -26,7 +26,7 @@ export const lightTheme: Theme = {
     placeholder: "#a0a0a0",
 };
 
-export const darkTheme: Theme = {
+ const darkTheme: Theme = {
     isDark:true,
     primary: "#f67968",
     secondary: "#2c5364",

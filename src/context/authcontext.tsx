@@ -17,10 +17,10 @@ type AuthContextProps = {
   user: User | null
   login: (email: string, password: string) => Promise<void>
   logout: () => void
+  register: (name: string, email: string, password: string) => Promise<void>
   getTasks: () => Promise<any[]>
   DeleteTask: (id: string) => Promise<any>
   editTask: (id: string) => Promise<any>
-  register: (name: string, email: string, password: string) => Promise<void>
   PutTask: (id: string, title: string) => Promise<any>
   PostTask: (title: string) => Promise<any>
 }
@@ -40,40 +40,53 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }, []);
 
   async function login(email: string, password: string) {
-    try {
-      const response = await api.post('session', {
-        email,
-        password,
-      })
-      if (response.data && response.data.token) {
-        await AsyncStorage.setItem('@token1234$%', JSON.stringify(response.data));
-        setUser(response.data);
-      } else {
-        throw new Error('Resposta inválida do servidor');
-      }
+  try {
+    const response = await api.post('session', { email, password });
+
+    if (response.data && response.data.token) {
+      await AsyncStorage.setItem('@token1234$%', JSON.stringify(response.data));
+      setUser(response.data);
+    } else {
+      throw new Error('Resposta inválida do servidor');
+    }
     } catch (error: any) {
       if (error.response) {
-         if (error.response.status === 401 || error.response.status === 400) {
+        const status = error.response.status;
+        if (status === 400 || status === 401) {
           throw new Error('Credenciais inválidas. Verifique seu email e senha.');
+        } else if (status >= 500 && status <= 599) {
+          throw new Error('Servidor indisponível. Tente novamente mais tarde.');
         } else {
-          throw new Error('Falha na conexão. Tente novamente mais tarde.');
+          throw new Error('Erro inesperado. Tente novamente.');
         }
-      }
-  }
-}
-  async function register(name:string,email: string, password: string) {
-    try {
-      const response = await api.post('users', {
-        name,
-        email,
-        password
-      })
-      await login(email,password)
-    } catch (error) {
-      console.error("Erro no cadastro:", error)
-      alert("Cadastro deu errado, pouraaaa")
+      } else {
+        throw new Error('Falha na conexão. Verifique sua internet e tente novamente.');
+      } 
     }
   }
+
+  async function register(name: string, email: string, password: string) {
+    try {
+      const response = await api.post('users', { name, email, password });
+      await login(email, password);
+    } catch (error: any) {
+      if (error.response) {
+        const status = error.response.status;
+        if (status === 409) {
+          throw new Error('Usuário já existente. Tente outro email.');
+        } else if (status >= 500 && status <= 599) {
+          throw new Error('Servidor indisponível. Tente novamente mais tarde.');
+        } else {
+          throw new Error('Erro inesperado no cadastro.');
+        }
+      } else if (error.request) {
+        throw new Error('Falha na conexão. Verifique sua internet e tente novamente.');
+      } else {
+        throw new Error('Erro desconhecido ao tentar cadastrar.');
+      }
+    }
+  }
+
 
   async function logout() {
     await AsyncStorage.removeItem('@token1234$%');
@@ -157,7 +170,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, getTasks,register,PutTask,DeleteTask,PostTask,editTask}}>
+    <AuthContext.Provider value={{ user, login, logout,register, getTasks,PutTask,DeleteTask,PostTask,editTask}}>
       {children}
     </AuthContext.Provider>
   )

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useAuth } from "../../hooks/auth";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTheme } from "../../hooks/theme";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Register = () => {
   const { register } = useAuth();
@@ -13,13 +14,25 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  
+  const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   async function handleRegister() {
+    if (!name || !email || !password) {
+      setErrorMessage("Preencha todos os campos.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setErrorMessage("A senha deve ter no mínimo 8 caracteres.");
+      return;
+    }
+
     try {
       await register(name, email, password);
-    } catch (error) {
-      console.error("Erro na criação de conta:", error);
-      Alert.alert("Erro", "Não foi possível criar a conta");
+      setErrorMessage("");
+    } catch (error: any) {
+      setErrorMessage(error.message || "Erro ao criar conta.");
     }
   }
 
@@ -71,6 +84,21 @@ const Register = () => {
       fontSize: 16,
       color: theme.text,
     },
+    passwordContainer: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: theme.inputBackground,
+      borderRadius: 10,
+      borderColor: theme.inputBorder,
+      borderWidth: 1,
+      paddingHorizontal: 10,
+    },
+    passwordInput: {
+      flex: 1,
+      paddingVertical: 14,
+      fontSize: 16,
+      color: theme.text,
+    },
     button: {
       width: "100%",
       paddingVertical: 14,
@@ -87,11 +115,15 @@ const Register = () => {
     },
     secondaryButton: {
       backgroundColor: theme.button,
+    },
+    errorText: {
+      color: "red",
+      marginTop: -10,
     }
   });
 
   return (
-    <LinearGradient colors={ [theme.primary,theme.secondary]} style={styles.container}>
+    <LinearGradient colors={[theme.primary, theme.secondary]} style={styles.container}>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Crie sua conta</Text>
         <Text style={styles.subtitle}>Bem-vindo ao TaskManager</Text>
@@ -123,21 +155,34 @@ const Register = () => {
 
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Senha:</Text>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={setPassword}
-            value={password}
-            placeholder="Digite sua senha aqui"
-            placeholderTextColor={theme.placeholder}
-            secureTextEntry
-          />
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={styles.passwordInput}
+              onChangeText={setPassword}
+              value={password}
+              placeholder="Digite sua senha aqui"
+              placeholderTextColor={theme.placeholder}
+              secureTextEntry={!showPassword}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              <MaterialIcons
+                name={showPassword ? "visibility" : "visibility-off"}
+                size={24}
+                color={theme.text}
+              />
+            </TouchableOpacity>
+          </View>
         </View>
+
+        {errorMessage !== "" && (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        )}
 
         <TouchableOpacity style={styles.button} onPress={handleRegister}>
           <Text style={styles.buttonText}>Registrar</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.button, styles.secondaryButton]}
           onPress={() => navigate("Login")}
         >
@@ -147,4 +192,5 @@ const Register = () => {
     </LinearGradient>
   );
 };
+
 export default Register;
