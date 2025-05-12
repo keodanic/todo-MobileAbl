@@ -13,9 +13,10 @@ import { useAuth } from "../../hooks/auth";
 import { AntDesign,MaterialIcons } from "@expo/vector-icons";
 import { useTheme } from "../../hooks/theme";
 import { useTask } from "../../hooks/task";
+import { themes } from '../../colors/theme';
 
 const HomePage = () => {
-  const { theme, toggleTheme, isDark } = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const [tasks, setTasks] = useState<any[]>([]);
   const { user ,logout } = useAuth();
   const {PostTask, getTasks, DeleteTask, editTask} = useTask();
@@ -189,12 +190,12 @@ const HomePage = () => {
           <Text style={styles.title}>Minhas Tarefas</Text>
           <View style={styles.themeToggleContainer}>
             <TouchableOpacity onPress={toggleTheme}>
-              <MaterialIcons 
-                name={isDark ? "wb-sunny" : "nights-stay"} 
-                size={24} 
-                color={theme.text} 
-              />
-            </TouchableOpacity>
+  <MaterialIcons 
+    name={theme === themes.dark ? "wb-sunny" : "nights-stay"} 
+    size={24} 
+    color={theme.text} 
+  />
+</TouchableOpacity>
             <TouchableOpacity onPress={handleLogout}>
               <AntDesign name="logout" size={24} color={theme.text} />
             </TouchableOpacity>

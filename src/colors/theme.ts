@@ -1,5 +1,4 @@
 export type Theme = {
-    isDark: any;
     primary: string;
     secondary: string;
     background: string;
@@ -13,7 +12,6 @@ export type Theme = {
 };
 
  const lightTheme: Theme = {
-    isDark:false ,
     primary: "#f67968",
     secondary: "#c3cfe2",
     background: "black",
@@ -27,7 +25,6 @@ export type Theme = {
 };
 
  const darkTheme: Theme = {
-    isDark:true,
     primary: "#f67968",
     secondary: "#2c5364",
     background: "#0f2027",

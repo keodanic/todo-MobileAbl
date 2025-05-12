@@ -112,7 +112,6 @@ const Login = () => {
       setErrorMessage("Por favor, preencha todos os campos.");
       return;
     }
-
     try {
       setErrorMessage("");
       await login(user, password);

@@ -22,12 +22,10 @@ const Register = () => {
       setErrorMessage("Preencha todos os campos.");
       return;
     }
-
     if (password.length < 8) {
       setErrorMessage("A senha deve ter no mínimo 8 caracteres.");
       return;
     }
-
     try {
       await register(name, email, password);
       setErrorMessage("");
@@ -121,7 +119,6 @@ const Register = () => {
       marginTop: -10,
     }
   });
-
   return (
     <LinearGradient colors={[theme.primary, theme.secondary]} style={styles.container}>
       <View style={styles.formContainer}>

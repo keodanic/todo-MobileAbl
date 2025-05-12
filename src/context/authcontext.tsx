@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 type User = {
   email: string
   token: string
+  name:string
 }
 
 type AuthContextProps = {
@@ -41,10 +42,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     } catch (error: any) {
       if (error.response) {
         const status = error.response.status
-        const message = error.response.data?.message || ''
-        if (message.toLowerCase().includes('email') && message.toLowerCase().includes('inválido')) {
-          throw new Error('Email inválido. Insira um email com domínio válido.')
-        } else if (status === 400 || status === 401) {
+        if (status === 400 || status === 401) {
           throw new Error('Credenciais inválidas. Verifique seu email e senha.')
         } else if (status >= 500 && status <= 599) {
           throw new Error('Servidor indisponível. Tente novamente mais tarde.')
@@ -82,7 +80,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   function logout() {
     AsyncStorage.removeItem('@token1234$%')
     setUser(null)
-    delete axios.defaults.headers.common['Authorization']
   }
 
   return (

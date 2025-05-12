@@ -14,6 +14,7 @@ export const TaskContext = createContext<TaskContextProps>({} as TaskContextProp
 
 export const TaskProvider = ({ children }: PropsWithChildren) => {
   const { user } = useAuth()
+  
   async function getTasks() {
     if (!user?.token) return []
     try {
